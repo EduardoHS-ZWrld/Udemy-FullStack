@@ -62,7 +62,23 @@ Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger 
  > JSON (JavaScript Object Notation) é um conjunto de regras para armazenamento e troca de informações em texto.
  > O JSON tende a ser mais otimizado para uso e menor que o XML para a conversão (parse) em outras linguagens.
 
-		<<>>
+		<<EF Core>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
