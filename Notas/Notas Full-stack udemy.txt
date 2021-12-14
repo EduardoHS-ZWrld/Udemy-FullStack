@@ -1,0 +1,117 @@
+> DOTNET no projeto: 
+
+
+dotNET: Framework feito para desenvolvimento web que, sendo sua função mais falada, permite a reutiliação de códigos e outras funções.
+
+O projeto vai rodar com: 
+	dotnet run
+e vai retornar qual porta ele está funcionando, informaçoes mais precisas em "Properties/launchSettings.json".
+
+O primeiro arquivo executado é o Program.cs que a partir dele irá puxar o Startup.cs
+
+Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger que é mostrado em Startup.cs
+
+
+	    <<HTTP e Verbos>>
+> Protocolo HTTP: uma ação do cliente se chama Request que segue um padrão:
+	-VERBO (A ação requisitada escrita)
+	-HEADER (características do content)
+	-CONTENT (o próprio conteudo)
+   Já o servidor manda uma Response para o cliente que também segue um padrão:
+	-Status code
+	-HEADER (características do content)
+	-CONTENT (o conteudo resposta)
+
+		<<REQUEST>>
+ > Verbos principais:
+	- GET: requisitar recursos
+	- POST: criar recurso
+	- PUT: atualiar recurso
+	- PATCH: atualiar recurso parcial
+	- DELETE: deletar recurso
+   existem mais verbos, mas esses são os principais que usam
+
+ > Header: metadados do request
+	- Content type: formato do conteúdo
+	- Content Lenght: tamanho do conteúdo
+	- Authoriation: quem fez a chamada
+	- Accept: quais são os tipos aceitáveis
+	- Cookies: passagem de dados por requisição
+   Existem muitos outros tipos de dados para o header, mas esses não são necessariamente os principais. Vai no estudo de cada caso para saber quais características usar nos headers
+
+ > Content é literalmente o conteúdo do request
+	- Pode ser enviado HTML, css, JavaScript, XML, JSON e por aí vai
+	- Conteúdo não é válido com qualquer VERBO
+	- Informações para ajudar a atenedr o request
+	- Onde passar binários e blobs???
+
+		<<RESPONSE>>
+ > Status Code: é uma situação da operação que é numerada de 100 à 599. São os famosos erro 404
+	- 100-199: Informação 
+	- 200-299: Sucesso
+	- 300-399: Redirecionamento
+	- 400-499: Erro do Cliente
+	- 500-599: Erro do Servidor
+
+ > Headers: Metadados semelhantes com os de um request, porém um dado diferente e importante de notar é o Expires que di até quando aquela Response é válida.
+
+ > Content: Também semelhante ao Request, a Response pode ter os mesmos tipos de arquivos enviados, mas é bom dier que na maioria das vees que uma API manda a response será um JSON.
+
+		<<JSON>>
+
+ > JSON (JavaScript Object Notation) é um conjunto de regras para armazenamento e troca de informações em texto.
+ > O JSON tende a ser mais otimizado para uso e menor que o XML para a conversão (parse) em outras linguagens.
+
+		<<>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------
+GET https://localhost:5001/api/evento
+
+>>Warning: Unable to verify the first certificate<<
+
+Network
+
+Request Headers
+	User-Agent: "PostmanRuntime/7.28.4"
+	Accept: "*/*"
+	Postman-Token: d167a508-575c-423f-a4b4-fc08d7f0c1a5
+	Host: localhost:5001
+	Accept-Encoding: gzip, deflate, br
+	Connection: keep-alive
+Response Headers
+	Date: Mon, 13 Dec 2021 19:03:20 GMT
+	Content-Type: text/plain; charset=utf-8
+	Server: Kestrel
+	Transfer-Encoding: chunked
+Response Body
+----------------------------------------
+
+-------------------------------------------
+MVC é uma arquitetura composta por:
+	> View - O contato do usuário com o programa
+	> Controller - o mediador de informações recebidas da camada view e das respostas do model. Futuramente será apenas o mediador de informações entre camadas com Angular
+	> Model - A camada que responderá as informações vindas do controller de acordo.
+-------------------------------------------
+
+
+
+***todo Controller vai ter o sufixo Controller
+
+
+z
