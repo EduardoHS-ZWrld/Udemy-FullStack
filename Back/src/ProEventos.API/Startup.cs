@@ -32,6 +32,7 @@ namespace ProEventos.API
             services.AddDbContext<DataContext>(
                 context => context.UseSqlite(Configuration.GetConnectionString("Default")) // Configuration são injeções no programa. Tem acesso aos appsettings.json
             );
+
             services.AddControllers(); //Vai retornar o controller > app.UseRouting
             services.AddSwaggerGen(c =>
             {
