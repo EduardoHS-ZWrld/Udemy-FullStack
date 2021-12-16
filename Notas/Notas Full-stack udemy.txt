@@ -12,7 +12,7 @@ O primeiro arquivo executado é o Program.cs que a partir dele irá puxar o Star
 Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger que é mostrado em Startup.cs
 
 
-	    <<HTTP e Verbos>>
+	<<HTTP e Verbos>>
 > Protocolo HTTP: uma ação do cliente se chama Request que segue um padrão:
 	-VERBO (A ação requisitada escrita)
 	-HEADER (características do content)
@@ -22,7 +22,7 @@ Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger 
 	-HEADER (características do content)
 	-CONTENT (o conteudo resposta)
 
-		<<REQUEST>>
+	<<REQUEST>>
  > Verbos principais:
 	- GET: requisitar recursos
 	- POST: criar recurso
@@ -45,7 +45,7 @@ Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger 
 	- Informações para ajudar a atenedr o request
 	- Onde passar binários e blobs???
 
-		<<RESPONSE>>
+	<<RESPONSE>>
  > Status Code: é uma situação da operação que é numerada de 100 à 599. São os famosos erro 404
 	- 100-199: Informação 
 	- 200-299: Sucesso
@@ -57,12 +57,42 @@ Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger 
 
  > Content: Também semelhante ao Request, a Response pode ter os mesmos tipos de arquivos enviados, mas é bom dier que na maioria das vees que uma API manda a response será um JSON.
 
-		<<JSON>>
+	<<JSON>>
 
  > JSON (JavaScript Object Notation) é um conjunto de regras para armazenamento e troca de informações em texto.
  > O JSON tende a ser mais otimizado para uso e menor que o XML para a conversão (parse) em outras linguagens.
 
-		<<EF Core>>
+	<<EF Core>>
+
+	<<Angular>>
+
+ Primeiro passo em um projeto em angular é ver o package.json para ver os comandos além dos padrões.
+ > start: ng serve: De alguma forma faz o Angular.json realmente ser lido
+
+ O Angular.json irá dizer os principais informações do projeto, como a primeira página HTML que seria carregada no index ou a Main.ts que seria a parte lógica (JS pré-processado).
+A comunicação entre o index.html e o main.ts acontece pelo angular, porém o html irá somente usar as funcionalidades do angular após o index fazer testes de que todos os módulos estão funcionando e então puxa esses módulos (app.modules.ts) que declara os componentes que serão usados no projeto, mas usando o app.components.ts que lista todos os componentes em si.
+
+No módulo terá todos os componentes declarados para conseguir usá-los no html, mas caso os componente tenha o próprio módulo ele deve ser importado para o módulo principal.
+
+> Diretivas: Recursos do angular para manipular o html (funções mais próximas do js)
+
+> Seletor: A maneira como chamar um componente em outros lugares
+
+ Enquanto no backend toda a parte lógica de um evento existe em algum local no projeto, porém suas informações de cada evento está no banco de dados e nossa maneira de interagir com os métodos criados na contoller é pelo localhost swagger como teste, ele está funcionando da maneira desejada. 
+ Já no frontend que gira em torno dos componentes se comunicando pelo angular não possui a noção exata do que é o evento, para o front um evento é apenas uma classe que existe, nada mais. Quem irá trazer as características de um evento mais as informações de cada evento é o próprio Angular através do HttpClientModule que vai se conectar com swagger em que eu testo os métodos do back e fazer um request para o swagger mostrsr o resultado dos métodos que ele pode usar, assim enviando as características e informações dos evento.
+ Mas de forma reta isso não funcionou como imaginei pois é necessário configurar o CORS.
+
+ >CORS: Configurar é basicamente fazer um método no Startup.cs no backend dizendo que você quer adicionar o CORS:
+	services.AddCors();
+ E na parte de Configuration do Startup.cs você declara as configurações do CORS: 
+	app.UseCors(
+		cors => cors.AllowAnyHeader()
+			    .AllowAnyMethod()
+			    .AllowAnyOrigin()
+	);
+ Essas autoriações vão fazer esse processo funcionar, mas cada projeto precisa de autorizações diferentes de acordo com as necessidades.
+
+	<<Bootstrap>>
 
 
 
@@ -96,34 +126,44 @@ Já no navegador você vai digitar a porta que foi mostrada, mas com o /swagger 
 
 
 
-------------------------------------------
-GET https://localhost:5001/api/evento
 
->>Warning: Unable to verify the first certificate<<
 
-Network
 
-Request Headers
-	User-Agent: "PostmanRuntime/7.28.4"
-	Accept: "*/*"
-	Postman-Token: d167a508-575c-423f-a4b4-fc08d7f0c1a5
-	Host: localhost:5001
-	Accept-Encoding: gzip, deflate, br
-	Connection: keep-alive
-Response Headers
-	Date: Mon, 13 Dec 2021 19:03:20 GMT
-	Content-Type: text/plain; charset=utf-8
-	Server: Kestrel
-	Transfer-Encoding: chunked
-Response Body
-----------------------------------------
 
--------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------
+
+> Qual é o uso do index.html no projeto já que o arquivo aberto foi o app.component.html?
+
+> Teste unitário
+
+---------------------------------------
+
+---------------------------------------
 MVC é uma arquitetura composta por:
 	> View - O contato do usuário com o programa
 	> Controller - o mediador de informações recebidas da camada view e das respostas do model. Futuramente será apenas o mediador de informações entre camadas com Angular
 	> Model - A camada que responderá as informações vindas do controller de acordo.
--------------------------------------------
+---------------------------------------
 
 
 

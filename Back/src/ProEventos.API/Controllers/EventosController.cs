@@ -11,12 +11,12 @@ namespace ProEventos.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EventoController : ControllerBase
+    public class EventosController : ControllerBase
     {
 
 
         public readonly DataContext _context;
-        public EventoController(DataContext context) //INjeçãode dependência
+        public EventosController(DataContext context) //Injeçãode dependência
         {
             _context = context;
         }
@@ -35,7 +35,7 @@ namespace ProEventos.API.Controllers
             );
         }
 
-        [HttpPost]
+        /* [HttpPost]
         public string Post()
         {
             return "Exemplo de post";
@@ -51,6 +51,6 @@ namespace ProEventos.API.Controllers
         public string Delete(int id)
         {
             return $"Exemplo de Delete com id = {id}";
-        }
+        } */
     }
 }

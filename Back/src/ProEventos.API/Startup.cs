@@ -34,6 +34,7 @@ namespace ProEventos.API
             );
 
             services.AddControllers(); //Vai retornar o controller > app.UseRouting
+            services.AddCors();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
@@ -55,6 +56,12 @@ namespace ProEventos.API
             app.UseRouting(); //O Controler vai ser retornado determinado pela rota
 
             app.UseAuthorization();
+
+            app.UseCors(
+		        cors => cors.AllowAnyHeader()
+			                .AllowAnyMethod()
+			                .AllowAnyOrigin()
+	        );
 
             app.UseEndpoints(endpoints =>   //E o controler irá retornar um endpoint
             {
