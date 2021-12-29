@@ -501,5 +501,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
-/Notas
+#Excluindo DB
+*.db
+*.db-shm
+*.db-wal
 Notas/Notas Full-stack udemy.txt
