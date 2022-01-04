@@ -14,6 +14,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ProEventos.Persistence;
 using ProEventos.Persistence.Contexto;
+using ProEventos.Application.Contratos;
+using ProEventos.Application;
+using ProEventos.Persistence.Contratos;
 
 namespace ProEventos.API
 {
@@ -31,10 +34,20 @@ namespace ProEventos.API
         {
 
             services.AddDbContext<ProEventosContext>(
-                context => context.UseSqlite(Configuration.GetConnectionString("Default")) // Configuration são injeções no programa. Tem acesso aos appsettings.json
+                // Configuration são injeções no programa. Tem acesso aos appsettings.json
+                context => context.UseSqlite(Configuration.GetConnectionString("Default"))
             );
 
-            services.AddControllers(); //Vai retornar o controller > app.UseRouting
+            //Vai retornar o controller > app.UseRouting
+            services.AddControllers()
+                    .AddNewtonsoftJson(
+                        x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    );
+
+            services.AddScoped<IEventosService, EventoService>();
+            services.AddScoped<IGeralPersist, GeralPersist>();
+            services.AddScoped<IEventoPersist, EventoPersist>();
+
             services.AddCors();
             services.AddSwaggerGen(c =>
             {
@@ -53,18 +66,18 @@ namespace ProEventos.API
             }
 
             app.UseHttpsRedirection();
-
-            app.UseRouting(); //O Controler vai ser retornado determinado pela rota
+            //O Controler vai ser retornado determinado pela rota
+            app.UseRouting();
 
             app.UseAuthorization();
 
             app.UseCors(
-		        cors => cors.AllowAnyHeader()
-			                .AllowAnyMethod()
-			                .AllowAnyOrigin()
-	        );
-
-            app.UseEndpoints(endpoints =>   //E o controler irá retornar um endpoint
+                cors => cors.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin()
+            );
+            //E o controler irá retornar um endpoint
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
