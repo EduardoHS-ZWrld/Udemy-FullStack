@@ -1,0 +1,103 @@
+<div class="card rounded shadow-sm p-3">
+
+  <div class="d-flex">
+    <div class="flex-fill pr-3">
+      <div class="barraFiltro input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">Filtro: </div>
+        </div>
+        <input class="eventoFiltroInput" type="text" placeholder="buscar evento" [(ngModel)]="filtroLista">
+      </div>
+    </div>
+    <div>
+      <a class="d-flex btn btn-outline-primary btn-sm" routerLink="/eventos/detalhe">
+        <i class="fa fa-plus-circle my-1"></i>
+        <b class="ml-1 d-none d-sm-block">Novo</b>
+      </a>
+    </div>
+  </div>
+
+  <div>
+    <table class="table table-striped">
+      <thead class="bg-dark">
+        <tr>
+          <th class="d-none d-sm-table-cell">
+            <button class="btn btn-outline-light btn-sm" (click)="toggleImg()">
+              <i class="{{showImg ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
+              {{showImg ? 'exibir' : 'ocultar'}}
+            </button>
+          </th>
+          <th>#</th>
+          <th>Tema</th>
+          <th>Local</th>
+          <th class="d-none d-sm-table-cell">Data</th>
+          <th class="d-none d-md-table-cell">Qtd Pessoas</th>
+          <th class="d-none d-md-table-cell">Lote</th>
+          <th>Opções</th>
+        </tr>
+      </thead>
+
+      <!-- Linha de teste REMOVER ROW -->
+      <tbody class="rowTeste">
+        <tr (click)="detalheEvento(0)" style="cursor: pointer;">
+          <td class="d-none d-sm-table-cell">
+            <img src="/assets/image1.png" alt="" [style.width.px]="larguraImg" [style.margin.px]="margemImg"
+              [collapse]="showImg" [isAnimated]="true">
+          </td>
+          <td>0</td>
+          <td>Tema 0</td>
+          <td>Sorocaba</td>
+          <td class="d-none d-sm-table-cell">29/11/2001</td>
+          <td class="d-none d-md-table-cell">000</td>
+          <td class="d-none d-md-table-cell">0º LOTE</td>
+          <td>
+            <button class="btn btn-danger btn-md" tooltip="Deletar" (click)="abrirModal(template)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+
+      <tbody *ngIf="eventos && eventosFiltrados.length">
+        <tr *ngFor="let evento of eventosFiltrados" (click)="detalheEvento(evento.id)" style="cursor: pointer;">
+          <td class="d-none d-sm-table-cell">
+            <img src="/assets/{{evento.imagemURL}}" alt="" [style.width.px]="larguraImg" [style.margin.px]="margemImg"
+              [collapse]="showImg" [isAnimated]="true">
+          </td>
+          <td>{{evento.id}}</td>
+          <td>{{evento.tema}}</td>
+          <td>{{evento.local}}</td>
+          <td class="d-none d-sm-table-cell">{{evento.dataEvento | DateFormatPipe}}</td>
+          <td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
+          <td class="d-none d-md-table-cell">{{evento.lotes[0].nome}}</td>
+          <td>
+            <button class="btn btn-danger btn-md" tooltip="Deletar" (click)="abrirModal(template)">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+
+      <tfoot *ngIf="!eventosFiltrados.length">
+        <tr>
+          <td colspan="8" class="text-center">
+            <h4>Nenhum evento encontrado!</h4>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Do you want to confirm?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()">Yes</button>
+    <button type="button" class="btn btn-primary" (click)="decline()">No</button>
+  </div>
+</ng-template>
+
+<ngx-spinner bdColor="rgba(26,13,51,0.6)" size="medium" color="#fff" type="ball-clip-rotate">
+  <p style="font-size: 20px; color: white">Carregando...</p>
+</ngx-spinner>
