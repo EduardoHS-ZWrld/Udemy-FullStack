@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using ProEventos.Persistence.Contexto;
 using ProEventos.Application.Contratos;
 using ProEventos.Application;
 using ProEventos.Persistence.Contratos;
+using AutoMapper;
 
 namespace ProEventos.API
 {
@@ -27,7 +29,6 @@ namespace ProEventos.API
         {
 
             services.AddDbContext<ProEventosContext>(
-                // Configuration são injeções no programa. Tem acesso aos appsettings.json
                 context => context.UseSqlite(Configuration.GetConnectionString("Default"))
             );
 
@@ -36,6 +37,8 @@ namespace ProEventos.API
                     .AddNewtonsoftJson(
                         x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                     );
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IEventosService, EventoService>();
             services.AddScoped<IGeralPersist, GeralPersist>();
