@@ -37,29 +37,8 @@
         </tr>
       </thead>
 
-      <!-- Linha de teste REMOVER ROW -->
-      <tbody class="rowTeste">
-        <tr (click)="detalheEvento(0)" style="cursor: pointer;">
-          <td class="d-none d-sm-table-cell">
-            <img src="/assets/image1.png" alt="" [style.width.px]="larguraImg" [style.margin.px]="margemImg"
-              [collapse]="showImg" [isAnimated]="true">
-          </td>
-          <td>0</td>
-          <td>Tema 0</td>
-          <td>Sorocaba</td>
-          <td class="d-none d-sm-table-cell">29/11/2001</td>
-          <td class="d-none d-md-table-cell">000</td>
-          <td class="d-none d-md-table-cell">0º LOTE</td>
-          <td>
-            <button class="btn btn-danger btn-md" tooltip="Deletar" (click)="abrirModal(template)">
-              <i class="fa fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-
       <tbody *ngIf="eventos && eventosFiltrados.length">
-        <tr *ngFor="let evento of eventosFiltrados" (click)="detalheEvento(evento.id)" style="cursor: pointer;">
+        <tr *ngFor="let evento of eventosFiltrados" (click)="rotaDetalheEvento(evento.id)" style="cursor: pointer;">
           <td class="d-none d-sm-table-cell">
             <img src="/assets/{{evento.imagemURL}}" alt="" [style.width.px]="larguraImg" [style.margin.px]="margemImg"
               [collapse]="showImg" [isAnimated]="true">
@@ -69,9 +48,9 @@
           <td>{{evento.local}}</td>
           <td class="d-none d-sm-table-cell">{{evento.dataEvento | DateFormatPipe}}</td>
           <td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
-          <td class="d-none d-md-table-cell">{{evento.lotes[0].nome}}</td>
+          <td class="d-none d-md-table-cell">{{evento.lotes[0]?.nome}}</td>
           <td>
-            <button class="btn btn-danger btn-md" tooltip="Deletar" (click)="abrirModal(template)">
+            <button class="btn btn-danger btn-md" tooltip="Deletar" (click)="abrirModal($event, template, evento.id)">
               <i class="fa fa-trash"></i>
             </button>
           </td>
@@ -92,7 +71,7 @@
 
 <ng-template #template>
   <div class="modal-body text-center">
-    <p>Do you want to confirm?</p>
+    <p>Quer deletar o evento de Código {{this.eventoId}}?</p>
     <button type="button" class="btn btn-default" (click)="confirm()">Yes</button>
     <button type="button" class="btn btn-primary" (click)="decline()">No</button>
   </div>

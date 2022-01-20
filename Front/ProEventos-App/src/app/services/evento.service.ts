@@ -10,17 +10,29 @@ import { Injectable } from '@angular/core';
 )
 export class EventoService {
   baseURL = 'https://localhost:5001/api/eventos';
-  constructor(private http : HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  public getEventos() : Observable<Evento[]> {
+  public getEventos(): Observable<Evento[]> {
     return this.http.get<Evento[]>(this.baseURL);
   }
 
-  public getEventosByTema(tema : string) : Observable<Evento[]> {
+  public getEventosByTema(tema: string): Observable<Evento[]> {
     return this.http.get<Evento[]>(`${this.baseURL}/${tema}/tema`);
   }
 
-  public getEventoById(id : number) : Observable<Evento> {
+  public getEventoById(id: number): Observable<Evento> {
     return this.http.get<Evento>(`${this.baseURL}/${id}`);
+  }
+
+  public post(evento: Evento): Observable<Evento> {
+    return this.http.post<Evento>(this.baseURL, evento);
+  }
+
+  public put(evento: Evento): Observable<Evento[]> {
+    return this.http.put<Evento[]>(`${this.baseURL}/${evento.id}`, evento);
+  }
+
+  public deleteEvento(id: number): Observable<any> {
+    return this.http.delete(`${this.baseURL}/${id}`);
   }
 }

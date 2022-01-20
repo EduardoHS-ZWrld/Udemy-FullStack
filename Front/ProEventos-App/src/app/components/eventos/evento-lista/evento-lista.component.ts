@@ -17,86 +17,92 @@ import { EventoService } from '@app/services/evento.service';
 
 export class EventoListaComponent implements OnInit {
 
-  modalRef? : BsModalRef;
+  modalRef?: BsModalRef;
   public eventos: Evento[] = [];
   public eventosFiltrados: Evento[] = [];
-  public larguraImg : number = 100;
-  public margemImg : number = 2;
-  public showImg : boolean = true;
-  private _filtroLista : string = '';
+  public eventoId = 0;
+  public larguraImg: number = 100;
+  public margemImg: number = 2;
+  public showImg: boolean = true;
+  private _filtroLista: string = '';
 
 
-  public get filtroLista() : string {
+  public get filtroLista(): string {
     return this._filtroLista;
   }
 
-  public set filtroLista(value : string) {
+  public set filtroLista(value: string) {
     this._filtroLista = value;
     this.eventosFiltrados = this.filtroLista ?
-                            this.filtrarEventos(this.filtroLista) :
-                            this.eventos;
-  }
-
-
-  public filtrarEventos(filtrarPor : string) : Evento[] {
-    filtrarPor = filtrarPor.toLocaleLowerCase();
-    return this.eventos.filter(
-      evento => evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1||
-                        evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
-    );
+      this.filtrarEventos(this.filtroLista) :
+      this.eventos;
   }
 
   constructor(
-    private eventoService : EventoService,
-    private modalService : BsModalService,
+    private eventoService: EventoService,
+    private modalService: BsModalService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
-    private router : Router
-    ) { }
+    private router: Router
+  ) { }
 
-  public ngOnInit(): void { //Método que é chamado antes do programa ser iniciado
+  public ngOnInit(): void {
     this.spinner.show();
-    this.getEventos();
+    this.carregarEventos();
   }
 
-  public getEventos() : void {
+  public carregarEventos(): void {
     this.eventoService.getEventos().subscribe(
-      {
-        next: (_eventos : Evento[]) => {
-          this.eventos = _eventos;
-          this.eventosFiltrados = this.eventos;
-        },
-        error: () => {
-          this.spinner.hide();
-          this.toastr.error('Erro ao carregar os Eventos', 'ERRO');
-        },
-        complete: () => this.spinner.hide()
+      (_eventos: Evento[]) => {
+        this.eventos = _eventos;
+        this.eventosFiltrados = this.eventos;
+      },
+      () => {
+        this.toastr.error('Erro ao carregar os Eventos', 'ERRO');
       }
+    ).add(() => this.spinner.hide());
+  }
+
+  public filtrarEventos(filtrarPor: string): Evento[] {
+    filtrarPor = filtrarPor.toLocaleLowerCase();
+    return this.eventos.filter(
+      evento => evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
+        evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
     );
   }
 
-  public toggleImg() : void {
+  public toggleImg(): void {
     this.showImg = !this.showImg
   }
 
-  public abrirModal(template : TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
-  }
-  confirm(): void {
-    this.modalRef?.hide();
-    this.toastr.success('Evento deletado com sucesso', 'ProEventos');
-  }
-  decline(): void {
-    this.modalRef?.hide();
-  }
-
-  /** Retirar método - Botão de Teste */
-  public showSuccess() {
-    this.toastr.success('Evento deletado com sucesso', 'ProEventos');
-  }
-
-  detalheEvento(id : number) : void{
+  rotaDetalheEvento(id: number): void {
     this.router.navigate([`eventos/detalhe/${id}`]);
   }
 
+  public abrirModal(event: any, template: TemplateRef<any>, eventoId: number) {
+    event.stopPropagation();
+    this.eventoId = eventoId;
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  confirm(): void {
+    this.modalRef?.hide();
+    this.spinner.show();
+
+    this.eventoService.deleteEvento(this.eventoId).subscribe(
+      (result: any) => {
+        console.log(result)
+        this.toastr.success('Evento deletado com sucesso', 'ProEventos');
+        this.carregarEventos();
+      },
+      (erro: any) => {
+        this.toastr.error(`Erro ao tentar deletar o evento ${this.eventoId}`, 'ERRO!');
+        console.error(erro);
+      }
+    ).add(() => this.spinner.hide());
+  }
+
+  decline(): void {
+    this.modalRef?.hide();
+  }
 }
