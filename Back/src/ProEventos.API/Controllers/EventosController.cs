@@ -11,8 +11,8 @@ namespace ProEventos.API.Controllers
     [Route("api/[controller]")]
     public class EventosController : ControllerBase
     {
-        private readonly IEventosService _eventoService;
-        public EventosController(IEventosService eventoService)
+        private readonly IEventoService _eventoService;
+        public EventosController(IEventoService eventoService)
         {
             _eventoService = eventoService;
         }
@@ -108,7 +108,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 if (await _eventoService.DeleteEventos(id))
-                    return Ok(new { message = "Deletado!"});
+                    return Ok(new { message = "Deletado!" });
                 else
                     return BadRequest("Evento não deletado");
             }

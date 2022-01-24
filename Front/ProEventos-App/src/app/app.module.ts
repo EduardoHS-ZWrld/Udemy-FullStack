@@ -28,6 +28,8 @@ import { NavComponent } from './shared/nav/nav.component';
 import { TítuloComponent } from './shared/Título/Título.component';
 
 import { EventoService } from './services/evento.service';
+import { LoteService } from './services/lote.service';
+
 import { DateTimeFormatPipe } from './helpers/DataTimeFormat.pipe';
 import { EventoDetalheComponent } from './components/eventos/evento-detalhe/evento-detalhe.component';
 import { EventoListaComponent } from './components/eventos/evento-lista/evento-lista.component';
@@ -76,7 +78,8 @@ defineLocale('pt-br', ptBrLocale);
     NgxSpinnerModule
   ],
   providers: [
-    EventoService
+    EventoService,
+    LoteService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
