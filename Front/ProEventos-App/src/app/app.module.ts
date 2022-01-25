@@ -77,6 +77,8 @@ defineLocale('pt-br', ptBrLocale);
     }),
     NgxSpinnerModule
   ],
+  exports: [
+  ],
   providers: [
     EventoService,
     LoteService
