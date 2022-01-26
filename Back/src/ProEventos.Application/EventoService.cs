@@ -42,7 +42,7 @@ namespace ProEventos.Application
             }
         }
 
-        public async Task<EventoDto> UpdateEventos(int eventoId, EventoDto model)
+        public async Task<EventoDto> UpdateEvento(int eventoId, EventoDto model)
         {
             try
             {

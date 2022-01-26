@@ -37,11 +37,12 @@
         </tr>
       </thead>
 
+
       <tbody *ngIf="eventos && eventosFiltrados.length">
         <tr *ngFor="let evento of eventosFiltrados" (click)="rotaDetalheEvento(evento.id)" style="cursor: pointer;">
           <td class="d-none d-sm-table-cell">
-            <img src="/assets/{{evento.imagemURL}}" alt="" [style.width.px]="larguraImg" [style.margin.px]="margemImg"
-              [collapse]="showImg" [isAnimated]="true">
+            <img [src]="mostraImagem(evento.imagemURL)" alt="" [style.width.px]="larguraImg"
+              [style.margin.px]="margemImg" [collapse]="showImg" [isAnimated]="true">
           </td>
           <td>{{evento.id}}</td>
           <td>{{evento.tema}}</td>
