@@ -33,6 +33,8 @@ namespace ProEventos.Application.Dtos
          Display(Name = "e-mail"),
          EmailAddress(ErrorMessage = "Deve conter um {0} válido.")]
         public string Email { get; set; }
+        public int UserId { get; set; }
+        public UserDto userDto { get; set; }
         public IEnumerable<LoteDto> Lotes { get; set; }
         public IEnumerable<RedeSocialDto> RedesSociais { get; set; }
         public IEnumerable<PalestranteDto> PalestrantesEventos { get; set; }

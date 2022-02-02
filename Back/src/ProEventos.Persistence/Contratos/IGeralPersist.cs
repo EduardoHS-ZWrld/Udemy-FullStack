@@ -1,8 +1,4 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using ProEventos.Domain;
 
 namespace ProEventos.Persistence.Contratos
 {
