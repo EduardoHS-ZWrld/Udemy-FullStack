@@ -41,28 +41,6 @@ namespace ProEventos.API.Controllers
             }
         }
 
-        [HttpPost("RegisterUser")]
-        [AllowAnonymous]
-        public async Task<IActionResult> RegisterUser(UserDto userDto)
-        {
-            try
-            {
-                if (await _accountService.UserExists(userDto.UserName))
-                    return BadRequest("Usuário já existe");
-
-                var user = await _accountService.CreateAccountAsync(userDto);
-                if (user != null)
-                    return Ok("Usuário cadastrado");
-
-                return BadRequest("Usuário não criado, tente novamente mais tarde!");
-            }
-            catch (Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar registrar Usuário. Erro: {ex.Message}");
-            }
-        }
-
         [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
@@ -89,11 +67,41 @@ namespace ProEventos.API.Controllers
             }
         }
 
+        [HttpPost("RegisterUser")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterUser(UserDto userDto)
+        {
+            try
+            {
+                if (await _accountService.UserExists(userDto.UserName))
+                    return BadRequest("Usuário já existe");
+
+                var user = await _accountService.CreateAccountAsync(userDto);
+                if (user != null)
+                    return Ok(new
+                    {
+                        userName = user.UserName,
+                        PrimeiroNome = user.PrimeiroNome,
+                        token = _tokenService.CreateToken(user).Result
+                    });
+
+                return BadRequest("Usuário não criado, tente novamente mais tarde!");
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Erro ao tentar registrar Usuário. Erro: {ex.Message}");
+            }
+        }
+
         [HttpPut("UpdateUser")]
         public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto)
         {
             try
             {
+                if (userUpdateDto.UserName != User.GetUserName())
+                    return Unauthorized("Usuário inválido!");
+
                 var user = await _accountService.GetUserByUserNameAsync(User.GetUserName());
                 if (user == null || user.UserName != userUpdateDto.UserName)
                     return Unauthorized("Usuário inválido");
@@ -101,7 +109,12 @@ namespace ProEventos.API.Controllers
                 var userReturn = await _accountService.UpdateAccount(userUpdateDto);
                 if (userReturn == null) return NotFound();
 
-                return Ok(userReturn);
+                return Ok(new
+                {
+                    userName = user.UserName,
+                    PrimeiroNome = user.PrimeiroNome,
+                    token = _tokenService.CreateToken(user).Result
+                });
             }
             catch (Exception ex)
             {

@@ -1,23 +1,26 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ProEventos.Application;
 using ProEventos.Application.Contratos;
+using ProEventos.Domain.Identity;
 using ProEventos.Persistence;
 using ProEventos.Persistence.Contexto;
 using ProEventos.Persistence.Contratos;
-using ProEventos.Domain.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
 
 namespace ProEventos.API
 {
@@ -84,7 +87,19 @@ namespace ProEventos.API
             services.AddScoped<ILotePersist, LotePersist>();
             services.AddScoped<IUserPersist, UserPersist>();
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
@@ -135,16 +150,14 @@ namespace ProEventos.API
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors(cors => cors.AllowAnyHeader()
-                                    .AllowAnyMethod()
-                                    .AllowAnyOrigin()
-            );
+            app.UseCors("CorsPolicy");
 
-            // app.UseStaticFiles(new StaticFileOptions()
-            // {
-            //     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
-            //     RequestPath = new PathString("/Resources")
-            // });
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
+                RequestPath = new PathString("/Resources")
+            });
 
             //E o controler irá retornar um endpoint (As chamadas das Controllers)
             app.UseEndpoints(endpoints =>

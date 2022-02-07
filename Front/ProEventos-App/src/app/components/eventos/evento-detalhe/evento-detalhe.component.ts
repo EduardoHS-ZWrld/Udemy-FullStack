@@ -255,6 +255,6 @@ export class EventoDetalheComponent implements OnInit {
         this.toastr.error('Erro ao tentar atualizar Imagem.', 'Erro');
         console.error(error);
       }
-    ).add(() => this.spinner.hide());;
+    ).add(() => this.spinner.hide());
   }
 }
