@@ -16,10 +16,6 @@
   border-left: 1px solid #dee2e6;
 }
 
-.cardImg {
-  padding-left: 0%;
-}
-
 .card-evento {
   position: sticky;
   --default-height: 25px;
@@ -33,8 +29,6 @@
 
 .card-img-block {
   img {
-    height: 290px;
-    object-fit: cover;
     cursor: pointer;
     border-radius: 3px 3px 0 0;
     width: 100%;

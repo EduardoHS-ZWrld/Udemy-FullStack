@@ -1,35 +1,29 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
-import { User } from '@app/models/Identity/User';
-import { UserUpdate } from '@app/models/Identity/UserUpdate';
+import { HttpClient } from '@angular/common/http';
+import { Observable, ReplaySubject } from 'rxjs';
 import { environment } from '@environments/environment';
-import { map, Observable, ReplaySubject, take } from 'rxjs';
-import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
+import { User } from '@app/models/identity/User';
+import { map, take } from 'rxjs/operators';
+import { UserUpdate } from '../models/identity/UserUpdate';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AccountService {
   private currentUserSource = new ReplaySubject<User>(1);
-  //Normalmente variáveis que são um subject possuem um $ no final
   public currentUser$ = this.currentUserSource.asObservable();
 
   baseUrl = environment.apiURL + 'api/account/'
-
   constructor(private http: HttpClient) { }
 
-  public logarUser(model: any, rotaMetodo: string): Observable<void> {
-    return this.http.post<User>(this.baseUrl + rotaMetodo, model, { headers: { skip: 'true' } })
-      .pipe(
-        take(1),
-        map((response: User) => {
-          const user = response;
-          if (user) {
-            this.setCurrentUser(user)
-          }
-        })
-      );
+  public login(model: any): Observable<void> {
+    return this.http.post<User>(this.baseUrl + 'login', model).pipe(
+      take(1),
+      map((response: User) => {
+        const user = response;
+        if (user) {
+          this.setCurrentUser(user)
+        }
+      })
+    );
   }
 
   getUser(): Observable<UserUpdate> {
@@ -40,13 +34,25 @@ export class AccountService {
     return this.http.put<UserUpdate>(this.baseUrl + 'updateUser', model).pipe(
       take(1),
       map((user: UserUpdate) => {
-        this.setCurrentUser(user);
-      }
+          this.setCurrentUser(user);
+        }
       )
     )
   }
 
-  public logout(): void {
+  public register(model: any): Observable<void> {
+    return this.http.post<User>(this.baseUrl + 'register', model).pipe(
+      take(1),
+      map((response: User) => {
+        const user = response;
+        if (user) {
+          this.setCurrentUser(user)
+        }
+      })
+    );
+  }
+
+  logout(): void {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
     this.currentUserSource.complete();

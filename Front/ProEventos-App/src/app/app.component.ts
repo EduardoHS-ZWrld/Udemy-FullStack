@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { User } from './models/Identity/User';
+import { User } from './models/identity/User';
 import { AccountService } from './services/account.service';
 
 @Component({
@@ -8,9 +8,8 @@ import { AccountService } from './services/account.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ProEventos-App';
 
-  constructor(public accountService: AccountService) { }
+  constructor(public accountService: AccountService) {}
 
   ngOnInit(): void {
     this.setCurrentUser();
@@ -22,9 +21,10 @@ export class AppComponent {
     if (localStorage.getItem('user'))
       user = JSON.parse(localStorage.getItem('user') ?? '{}');
     else
-      user = null;
+      user = null
 
     if (user)
       this.accountService.setCurrentUser(user);
   }
+
 }

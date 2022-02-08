@@ -1,12 +1,12 @@
 export class UserUpdate {
-  public titulo: string
-  public userName: string
-  public primeiroNome: string
-  public ultimoNome: string
-  public email: string
-  public phoneNumber: string
-  public funcao: string
-  public descricao: string
-  public password: string
-  public token: string
+  titulo: string;
+  userName: string;
+  primeiroNome: string;
+  ultimoNome: string;
+  email: string;
+  phoneNumber: string;
+  funcao: string;
+  descricao: string;
+  password: string;
+  token: string;
 }

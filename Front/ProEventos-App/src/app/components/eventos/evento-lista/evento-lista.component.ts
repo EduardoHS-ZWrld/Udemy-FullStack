@@ -2,114 +2,142 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
+
+import { debounceTime, Subject } from 'rxjs';
 
 import { Evento } from '@app/models/Evento';
 import { EventoService } from '@app/services/evento.service';
 import { environment } from '@environments/environment';
+import { PaginatedResult, Pagination } from '@app/models/Pagination';
 
 @Component({
   selector: 'app-evento-lista',
   templateUrl: './evento-lista.component.html',
-  styleUrls: ['./evento-lista.component.scss']
+  styleUrls: ['./evento-lista.component.scss'],
 })
-
-
 export class EventoListaComponent implements OnInit {
-
-  modalRef?: BsModalRef;
+  modalRef: BsModalRef;
   public eventos: Evento[] = [];
-  public eventosFiltrados: Evento[] = [];
   public eventoId = 0;
-  public larguraImg: number = 100;
-  public margemImg: number = 2;
-  public showImg: boolean = true;
-  private _filtroLista: string = '';
+  public pagination = {} as Pagination;
 
+  public larguraImagem = 150;
+  public margemImagem = 2;
+  public exibirImagem = true;
 
-  public get filtroLista(): string {
-    return this._filtroLista;
-  }
+  termoBuscaChanged: Subject<string> = new Subject<string>();
 
-  public set filtroLista(value: string) {
-    this._filtroLista = value;
-    this.eventosFiltrados = this.filtroLista ?
-      this.filtrarEventos(this.filtroLista) :
-      this.eventos;
+  public filtrarEventos(evt: any): void {
+    if (this.termoBuscaChanged.observers.length === 0) {
+      this.termoBuscaChanged.pipe(debounceTime(440)).subscribe(
+        filtrarPor => {
+          this.spinner.show();
+          this.eventoService.getEventos(
+            this.pagination.currentPage,
+            this.pagination.itemsPerPage,
+            filtrarPor
+          ).subscribe(
+            (paginatedResult: PaginatedResult<Evento[]>) => {
+              this.eventos = paginatedResult.result;
+              this.pagination = paginatedResult.pagination;
+            },
+            (error: any) => {
+              this.spinner.hide();
+              this.toastr.error('Erro ao carregar os Eventos', 'Erro!');
+              console.error(error.error);
+            },
+          ).add(() => this.spinner.hide());
+
+        }
+      )
+    }
+    this.termoBuscaChanged.next(evt.value);
   }
 
   constructor(
     private eventoService: EventoService,
     private modalService: BsModalService,
-    private spinner: NgxSpinnerService,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private router: Router
   ) { }
 
   public ngOnInit(): void {
-    this.spinner.show();
+    this.pagination = {
+      currentPage: 1,
+      itemsPerPage: 3,
+      totalItems: 1
+    } as Pagination;
+
     this.carregarEventos();
   }
 
-  public carregarEventos(): void {
-    this.eventoService.getEventos().subscribe(
-      (_eventos: Evento[]) => {
-        this.eventos = _eventos;
-        this.eventosFiltrados = this.eventos;
-      },
-      () => {
-        this.toastr.error('Erro ao carregar os Eventos', 'ERRO');
-      }
-    ).add(() => this.spinner.hide());
-  }
-
-  public filtrarEventos(filtrarPor: string): Evento[] {
-    filtrarPor = filtrarPor.toLocaleLowerCase();
-    return this.eventos.filter(
-      evento => evento.local.toLocaleLowerCase().indexOf(filtrarPor) !== -1 ||
-        evento.tema.toLocaleLowerCase().indexOf(filtrarPor) !== -1
-    );
-  }
-
-  public toggleImg(): void {
-    this.showImg = !this.showImg
+  public alterarImagem(): void {
+    this.exibirImagem = !this.exibirImagem;
   }
 
   public mostraImagem(imagemURL: string): string {
     return (imagemURL !== '')
       ? `${environment.apiURL}resources/images/${imagemURL}`
-      : 'assets/images/semImagem.png';
+      : 'assets/img/semImagem.jpeg';
   }
 
-  rotaDetalheEvento(id: number): void {
-    this.router.navigate([`eventos/detalhe/${id}`]);
+  public carregarEventos(): void {
+    this.spinner.show();
+
+    this.eventoService.getEventos(
+      this.pagination.currentPage,
+      this.pagination.itemsPerPage
+    ).subscribe(
+      (PaginatedResult: PaginatedResult<Evento[]>) => {
+        this.eventos = PaginatedResult.result;
+        this.pagination = PaginatedResult.pagination;
+      },
+      (error: any) => {
+        this.spinner.hide();
+        this.toastr.error('Erro ao Carregar os Eventos', 'Erro!');
+        console.error(error.error);
+      },
+    ).add(() => this.spinner.hide());
   }
 
-  public abrirModal(event: any, template: TemplateRef<any>, eventoId: number) {
+  openModal(event: any, template: TemplateRef<any>, eventoId: number): void {
     event.stopPropagation();
     this.eventoId = eventoId;
     this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
   }
 
+  public pageChanged(event): void {
+    this.pagination.currentPage = event.page;
+    this.carregarEventos();
+  }
+
   confirm(): void {
-    this.modalRef?.hide();
+    this.modalRef.hide();
     this.spinner.show();
 
     this.eventoService.deleteEvento(this.eventoId).subscribe(
       (result: any) => {
-        console.log(result)
-        this.toastr.success('Evento deletado com sucesso', 'ProEventos');
-        this.carregarEventos();
+        if (result.message === 'Deletado') {
+          this.toastr.success('O Evento foi deletado com Sucesso.', 'Deletado!');
+          this.carregarEventos();
+        }
       },
-      (erro: any) => {
-        this.toastr.error(`Erro ao tentar deletar o evento ${this.eventoId}`, 'ERRO!');
-        console.error(erro);
+      (error: any) => {
+        console.error(error);
+        this.toastr.error(`Erro ao tentar deletar o evento ${this.eventoId}`, 'Erro');
       }
     ).add(() => this.spinner.hide());
   }
 
   decline(): void {
-    this.modalRef?.hide();
+    this.modalRef.hide();
   }
+
+  detalheEvento(id: number): void {
+    this.router.navigate([`eventos/detalhe/${id}`]);
+  }
+
 }
